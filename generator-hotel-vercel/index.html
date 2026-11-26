@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Generator Rekomendasi Hotel</title>
-<meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f6f9;--panel:#fff;--ink:#18212c;--mute:#66707d;--line:#dfe4ea;--acc:#0194f3}
@@ -12,6 +12,11 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Plus Jakarta
 header{padding:24px max(4vw,16px) 8px;max-width:1340px;margin:auto}
 h1{font-size:clamp(26px,3vw,34px);line-height:1.1;margin:0 0 6px}
 header p{margin:0;color:var(--mute)}
+.setup{max-width:1340px;margin:14px auto 0;padding:0 max(4vw,16px)}
+.setup .card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px 24px;align-items:center}
+@media(max-width:700px){.setup .card{grid-template-columns:minmax(0,1fr)}}
+.bm{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#fff;font-weight:800;padding:12px 20px;border-radius:999px;text-decoration:none;cursor:grab;box-shadow:0 4px 14px #0194f355;white-space:nowrap}
+.setup ol{margin:0;padding-left:20px;font-size:15px}.setup li{margin:3px 0}
 main{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:20px;padding:16px max(4vw,16px) 40px;max-width:1340px;margin:auto;align-items:start}
 @media(max-width:900px){main{grid-template-columns:minmax(0,1fr)}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
@@ -22,14 +27,13 @@ label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
 label small{font-weight:400;color:var(--mute)}
 input,select{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;color:var(--ink);min-height:44px}
 input:focus,button:focus-visible{outline:3px solid #0194f355;border-color:var(--acc)}
-.big{font-size:17px;background:#fff;border-width:2px}
+.big{background:#fff;border-width:2px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .status{font-size:13px;margin-top:6px;color:var(--mute);min-height:20px}
-.status.ok{color:#15803d}.status.err{color:#c2410c}.status.load{color:var(--acc)}
+.status.ok{color:#15803d}.status.err{color:#c2410c}
 .more{margin-top:6px}.more summary{font-size:13px;color:var(--mute);cursor:pointer}
 button{font:inherit;font-weight:600;min-height:44px;padding:10px 16px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
 button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
-button:disabled{opacity:.6;cursor:wait}
 .btns{display:flex;flex-wrap:wrap;gap:8px}
 .stage{background:#fff;border-radius:10px;padding:20px;border:1px solid var(--line);overflow-x:auto}
 textarea{width:100%;min-height:200px;font:13px/1.5 ui-monospace,Menlo,monospace;padding:12px;border:1px solid var(--line);border-radius:9px;background:#f8fafc}
@@ -41,15 +45,31 @@ details.set{margin-top:6px;font-size:14px}details.set summary{cursor:pointer;fon
 <body>
 <header>
   <h1>Generator Rekomendasi Hotel</h1>
-  <p>Tempel 2 link Traveloka (boleh link pendek trv.lk). Nama hotel, gambar, dan harga diambil otomatis.</p>
+  <p>Data hotel diambil langsung dari halaman Traveloka yang Anda buka, lalu jadi 2 tabel siap tempel di CMS.</p>
 </header>
+
+<div class="setup">
+  <div class="card">
+    <a class="bm" id="bm" href="#" title="Seret ke bar bookmark">📌 Ambil Data Hotel</a>
+    <div>
+      <b>Pasang sekali:</b> seret tombol biru ke bar bookmark browser (Ctrl+Shift+B / ⌘+Shift+B untuk memunculkan bar).
+      <details class="set"><summary>Tidak bisa diseret? Pasang manual</summary>
+        <p style="margin:6px 0">Buat bookmark baru, isi nama "Ambil Data Hotel", lalu tempel kode ini di kolom URL:</p>
+        <div class="btns"><button type="button" id="copyBm">Salin kode bookmark</button></div>
+      </details>
+    </div>
+    <ol style="grid-column:1/-1">
+      <li>Tempel link trv.lk di slot Hotel 1, lalu buka link itu di tab baru (klik "Buka").</li>
+      <li>Di halaman hotel Traveloka, klik bookmark <b>📌 Ambil Data Hotel</b>. Data tersalin otomatis.</li>
+      <li>Kembali ke sini, tempel (Ctrl+V / ⌘+V) di kolom <b>Data hotel</b>. Ulangi untuk Hotel 2, lalu klik <b>Salin kode</b>.</li>
+    </ol>
+  </div>
+</div>
+
 <main>
   <section class="card">
     <div id="slots"></div>
-    <div class="btns">
-      <button class="pri" id="prosesAll">Proses semua link</button>
-      <button id="addSlot">+ Tambah hotel</button>
-    </div>
+    <div class="btns"><button id="addSlot">+ Tambah hotel</button><button id="clearAll">Kosongkan semua</button></div>
     <details class="set">
       <summary>Pengaturan tampilan</summary>
       <label for="heading">Judul blok</label><input id="heading" value="Rekomendasi Hotel">
@@ -58,6 +78,8 @@ details.set{margin-top:6px;font-size:14px}details.set summary{cursor:pointer;fon
         <div><label for="btnColor">Warna tombol</label><input id="btnColor" type="color" value="#0194f3"></div>
         <div><label for="priceColor">Warna harga</label><input id="priceColor" type="color" value="#ff5e1f"></div>
       </div>
+      <label for="showPrice">Tampilkan harga</label>
+      <select id="showPrice"><option value="1">Ya, jika terbaca</option><option value="0">Tidak (harga sering berubah)</option></select>
       <label for="rel">Atribut link</label>
       <select id="rel"><option value="nofollow sponsored noopener">nofollow sponsored (afiliasi)</option><option value="noopener">biasa</option></select>
     </details>
@@ -79,80 +101,88 @@ details.set{margin-top:6px;font-size:14px}details.set summary{cursor:pointer;fon
 
 <script>
 (function(){
+var BM_SRC = "(() => { const q = s => { const e = document.querySelector(s); return e ? (e.getAttribute('content') || e.textContent || '').trim() : ''; }; let name = q('h1') || q('meta[property=\"og:title\"]') || document.title; name = name.split(/\\s+[|\u2022]\\s+/)[0] .replace(/\\s+[-\u2013\u2014]\\s+(Traveloka|Harga|Promo|Booking|Pesan|Diskon|Update).*$/i, '') .replace(/^(Promo|Harga|Booking|Pesan|Diskon)\\s+(Kamar\\s+)?(di\\s+)?/i, '') .trim(); let image = q('meta[property=\"og:image\"]') || q('meta[name=\"twitter:image\"]'); if (!image) { let best = 0; document.querySelectorAll('img').forEach(i => { const a = i.naturalWidth * i.naturalHeight; if (a > best && /^https?:/.test(i.currentSrc || i.src)) { best = a; image = i.currentSrc || i.src; } }); } const nums = (document.body.innerText.match(/Rp\\s?[\\d.]{5,}/g) || []) .map(s => +s.replace(/\\D/g, '')).filter(n => n >= 50000); const price = nums.length ? String(Math.min(...nums)) : ''; const data = 'TVLK' + JSON.stringify({ name, image, price, url: location.href }); const toast = msg => { const d = document.createElement('div'); d.textContent = msg; d.style.cssText = 'position:fixed;z-index:2147483647;left:50%;top:20px;transform:translateX(-50%);background:#0194f3;color:#fff;font:600 15px/1.4 sans-serif;padding:12px 18px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:90vw'; document.body.appendChild(d); setTimeout(() => d.remove(), 3500); }; if (!name || !image) { toast('Nama/gambar tidak terbaca. Pastikan ini halaman detail hotel.'); } navigator.clipboard.writeText(data).then( () => toast('\u2713 Data hotel tersalin: ' + name + ' \u2014 tempel di generator'), () => prompt('Salin teks ini lalu tempel di generator:', data) ); })();";
 var $ = function(id){ return document.getElementById(id); };
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function blank(){ return {link:'', name:'', img:'', price:'', loc:'', state:'', msg:''}; }
+function blank(){ return {link:'', name:'', img:'', price:'', loc:''}; }
+var KEY = 'gen-hotel-bm-v1';
 var items = [blank(), blank()];
+try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.items && saved.items.length >= 2) items = saved.items; } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify({items: items})); } catch(e){} }
+
 var isUrl = function(u){ return /^https?:\/\/\S+$/i.test((u||'').trim()); };
 var ready = function(it){ return isUrl(it.link) && isUrl(it.img) && it.name.trim(); };
 function rupiah(p){ var n = String(p||'').replace(/\D/g,''); return n ? 'Rp' + Number(n).toLocaleString('id-ID') : ''; }
 
+$('bm').href = 'javascript:' + encodeURIComponent(BM_SRC);
+$('bm').addEventListener('click', function(e){ e.preventDefault(); alertBox('Jangan diklik di sini. Seret tombol ini ke bar bookmark, lalu klik saat Anda berada di halaman hotel Traveloka.'); });
+$('copyBm').addEventListener('click', function(){ copyText($('bm').href, $('copyBm'), 'Salin kode bookmark'); });
+function alertBox(msg){ var b = $('bm'); var old = b.textContent; b.textContent = '↑ Seret ke bar bookmark'; setTimeout(function(){ b.textContent = old; }, 2500); }
+
+function parseData(t){
+  t = String(t||'').trim();
+  var i = t.indexOf('TVLK{'); if (i < 0) return null;
+  try { return JSON.parse(t.slice(i + 4)); } catch(e){ return null; }
+}
+
 function slotsHTML(){
   $('slots').innerHTML = items.map(function(it, i){
+    var st = ready(it) ? '<span class="status ok">✓ ' + esc(it.name) + '</span>' : '';
     return '<div class="slot"><h2>Hotel ' + (i+1) + (i >= 2 ? ' <button data-del="'+i+'" style="min-height:34px;padding:2px 10px;font-size:13px">Hapus</button>' : '') + '</h2>' +
-      '<label for="link'+i+'">Link Traveloka</label>' +
-      '<input class="big" id="link'+i+'" data-i="'+i+'" data-k="link" placeholder="https://trv.lk/xxxxxxxx" autocomplete="off" value="'+esc(it.link)+'">' +
-      '<div class="status '+it.state+'" id="st'+i+'">'+esc(it.msg)+'</div>' +
-      '<details class="more"'+(it.state==='err'?' open':'')+'><summary>Ubah hasil (nama, gambar, harga)</summary>' +
+      '<label for="link'+i+'">1. Link Traveloka (trv.lk)</label>' +
+      '<div style="display:flex;gap:8px"><input class="big" id="link'+i+'" data-i="'+i+'" data-k="link" placeholder="https://trv.lk/xxxxxxxx" autocomplete="off" value="'+esc(it.link)+'">' +
+      '<a id="open'+i+'" href="'+(isUrl(it.link)?esc(it.link):'#')+'" target="_blank" rel="noopener" style="flex:none;display:inline-flex;align-items:center;padding:0 14px;border:1px solid var(--line);border-radius:9px;font-weight:600;color:var(--ink);text-decoration:none">Buka ↗</a></div>' +
+      '<label for="data'+i+'">2. Data hotel <small>(tempel dari 📌 bookmark)</small></label>' +
+      '<input class="big" id="data'+i+'" data-i="'+i+'" data-k="data" placeholder="Klik di sini lalu Ctrl+V" autocomplete="off">' +
+      '<div class="status" id="st'+i+'">' + st + '</div>' +
+      '<details class="more"><summary>Ubah hasil (nama, gambar, harga, lokasi)</summary>' +
         '<label for="name'+i+'">Nama hotel</label><input id="name'+i+'" data-i="'+i+'" data-k="name" value="'+esc(it.name)+'">' +
         '<label for="img'+i+'">Link gambar</label><input id="img'+i+'" data-i="'+i+'" data-k="img" value="'+esc(it.img)+'">' +
-        '<div class="row2"><div><label for="price'+i+'">Harga <small>(opsional)</small></label><input id="price'+i+'" data-i="'+i+'" data-k="price" inputmode="numeric" value="'+esc(it.price)+'"></div>' +
-        '<div><label for="loc'+i+'">Lokasi <small>(opsional)</small></label><input id="loc'+i+'" data-i="'+i+'" data-k="loc" value="'+esc(it.loc)+'"></div></div>' +
+        '<div class="row2"><div><label for="price'+i+'">Harga</label><input id="price'+i+'" data-i="'+i+'" data-k="price" inputmode="numeric" value="'+esc(it.price)+'"></div>' +
+        '<div><label for="loc'+i+'">Lokasi</label><input id="loc'+i+'" data-i="'+i+'" data-k="loc" value="'+esc(it.loc)+'"></div></div>' +
       '</details></div>';
   }).join('');
 }
+function fill(i){ ['name','img','price','loc'].forEach(function(k){ var el = $(k+i); if (el) el.value = items[i][k] || ''; }); }
+function setStatus(i, cls, msg){ var el = $('st'+i); if (el){ el.className = 'status ' + cls; el.textContent = msg; } }
 
-function setStatus(i, state, msg){
-  items[i].state = state; items[i].msg = msg;
-  var el = $('st'+i); if (el){ el.className = 'status ' + state; el.textContent = msg; }
-}
-
-function fill(i){
-  ['name','img','price','loc'].forEach(function(k){ var el = $(k+i); if (el) el.value = items[i][k] || ''; });
-}
-
-function proses(i){
-  var it = items[i], link = it.link.trim();
-  if (!isUrl(link)){ if (link) setStatus(i,'err','Link harus diawali https://'); return; }
-  setStatus(i,'load','Mengambil data hotel…');
-  fetch('/api/hotel?url=' + encodeURIComponent(link))
-    .then(function(res){ return res.json().then(function(j){ if (!res.ok) throw new Error(j.error || ('HTTP ' + res.status)); return j; }); })
-    .then(function(r){
-      if (items[i].link.trim() !== link) return;
-      items[i].name = r.name || items[i].name;
-      items[i].img = r.image || items[i].img;
-      if (r.price && !items[i].price) items[i].price = r.price;
-      fill(i);
-      if (r.name && r.image) setStatus(i,'ok','✓ ' + r.name);
-      else { setStatus(i,'err','Sebagian data tidak terbaca (' + (r.debug || []).join('; ') + '). Lengkapi di "Ubah hasil".'); var d = $('st'+i).nextElementSibling; if (d) d.open = true; }
-      render();
-    })
-    .catch(function(e){
-      setStatus(i,'err','Gagal mengambil data: ' + (e && e.message ? e.message : e) + '. Isi manual di "Ubah hasil".');
-      var d = $('st'+i).nextElementSibling; if (d) d.open = true;
-    });
-}
-
-var timers = {};
 $('slots').addEventListener('input', function(e){
   var el = e.target, i = +el.dataset.i, k = el.dataset.k; if (!k) return;
-  items[i][k] = el.value;
-  if (k === 'link'){
-    items[i].name = ''; items[i].img = ''; items[i].price = ''; fill(i);
-    clearTimeout(timers[i]); timers[i] = setTimeout(function(){ proses(i); }, 600);
+  var it = items[i];
+  // Data bookmark boleh ditempel di kolom mana pun
+  var d = parseData(el.value);
+  if (d){
+    it.name = d.name || ''; it.img = d.image || ''; it.price = d.price || '';
+    if (!isUrl(it.link)) { it.link = d.url || ''; $('link'+i).value = it.link; }
+    if (k === 'link') { el.value = it.link; }
+    if (k === 'data') { el.value = ''; }
+    fill(i);
+    if (it.name && it.img) setStatus(i, 'ok', '✓ ' + it.name); else setStatus(i, 'err', 'Nama atau gambar tidak terbaca, lengkapi di "Ubah hasil".');
+    if (!it.img || !it.name) { var det = $('st'+i).nextElementSibling; if (det) det.open = true; }
+  } else if (k === 'data') {
+    if (el.value.trim()) setStatus(i, 'err', 'Ini bukan data dari tombol 📌. Klik bookmark di halaman hotel Traveloka dulu.');
+    return;
+  } else {
+    it[k] = el.value;
+    if (k === 'link') { var a = $('open'+i); a.href = isUrl(it.link) ? it.link : '#'; }
   }
   render();
 });
 $('slots').addEventListener('click', function(e){
-  var b = e.target.closest('[data-del]'); if (!b) return;
-  items.splice(+b.dataset.del, 1); slotsHTML(); render();
+  var b = e.target.closest('[data-del]'); if (b){ items.splice(+b.dataset.del, 1); slotsHTML(); render(); return; }
+  var a = e.target.closest('a[id^="open"]'); if (a && a.getAttribute('href') === '#'){ e.preventDefault(); }
 });
 $('addSlot').addEventListener('click', function(){ items.push(blank()); slotsHTML(); render(); });
-$('prosesAll').addEventListener('click', function(){ items.forEach(function(_, i){ proses(i); }); });
+var armed = false;
+$('clearAll').addEventListener('click', function(){
+  var b = $('clearAll');
+  if (!armed){ armed = true; b.textContent = 'Yakin? Klik lagi'; setTimeout(function(){ armed = false; b.textContent = 'Kosongkan semua'; }, 3000); return; }
+  armed = false; b.textContent = 'Kosongkan semua'; items = [blank(), blank()]; slotsHTML(); render();
+});
 
 function cardHTML(it){
   var rel = esc($('rel').value), btnC = esc($('btnColor').value), priceC = esc($('priceColor').value);
-  var href = esc(it.link.trim()), name = esc(it.name.trim()), price = rupiah(it.price), loc = esc((it.loc||'').trim());
+  var href = esc(it.link.trim()), name = esc(it.name.trim()), price = $('showPrice').value === '1' ? rupiah(it.price) : '', loc = esc((it.loc||'').trim());
   var bd = '2px dashed #d6d6d6';
   return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:720px;border:'+bd+';border-radius:14px;border-collapse:separate;border-spacing:0;margin:0 0 16px;background:#ffffff;box-shadow:0 1px 4px rgba(0,0,0,.06);">\n<tr>\n' +
     '<td style="width:150px;padding:14px;border-right:'+bd+';vertical-align:middle;text-align:center;">\n' +
@@ -164,7 +194,7 @@ function cardHTML(it){
     '<a href="'+href+'" target="_blank" rel="'+rel+'" style="display:inline-block;background:'+btnC+';color:#ffffff;font-size:16px;font-weight:800;padding:11px 22px;border-radius:9px;text-decoration:none;">'+esc($('btnText').value)+'</a>\n' +
     '</td>\n</tr>\n</table>';
 }
-function ghost(i){ return '<div style="border:2px dashed #e2e2e2;border-radius:14px;padding:26px;margin:0 0 16px;color:#aaa;text-align:center;font-size:14px">Hotel '+(i+1)+': tempel link Traveloka</div>'; }
+function ghost(i){ return '<div style="border:2px dashed #e2e2e2;border-radius:14px;padding:26px;margin:0 0 16px;color:#aaa;text-align:center;font-size:14px">Hotel '+(i+1)+' belum lengkap</div>'; }
 
 function render(){
   var valid = items.filter(ready), heading = $('heading').value.trim();
@@ -174,15 +204,16 @@ function render(){
   var n = valid.length, t = items.length;
   $('info').textContent = n === t ? n + ' tabel siap disalin' : n + ' dari ' + t + ' tabel siap';
   $('info').style.color = n === t ? '#15803d' : '#c2410c';
+  save();
 }
-['heading','btnText','btnColor','priceColor','rel'].forEach(function(k){ $(k).addEventListener('input', render); });
+['heading','btnText','btnColor','priceColor','rel','showPrice'].forEach(function(k){ $(k).addEventListener('input', render); });
 
-$('copy').addEventListener('click', function(){
-  var t = $('code'); if (!t.value) return;
-  var done = function(){ var b = $('copy'); b.textContent = 'Tersalin ✓'; setTimeout(function(){ b.textContent = 'Salin kode'; }, 2000); };
-  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(done, function(){ t.select(); document.execCommand('copy'); done(); });
-  else { t.select(); document.execCommand('copy'); done(); }
-});
+function copyText(text, btn, label){
+  var done = function(){ btn.textContent = 'Tersalin ✓'; setTimeout(function(){ btn.textContent = label; }, 2000); };
+  var fallback = function(){ var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+}
+$('copy').addEventListener('click', function(){ if ($('code').value) copyText($('code').value, $('copy'), 'Salin kode'); });
 
 slotsHTML(); render();
 })();

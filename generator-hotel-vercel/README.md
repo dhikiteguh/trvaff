@@ -1,26 +1,19 @@
 # Generator Rekomendasi Hotel (Traveloka)
 
-Tempel link Traveloka (termasuk link pendek trv.lk). Nama hotel, gambar, dan harga diambil otomatis,
-lalu dibuat kode HTML kartu rekomendasi untuk ditempel di CMS.
+Versi bookmarklet: data hotel diambil di browser Anda sendiri dari halaman Traveloka yang sedang dibuka,
+jadi tidak diblokir anti-bot Traveloka (pengambilan lewat server selalu kena HTTP 403).
 
-## Isi folder
-- `index.html` — halaman generator
-- `api/hotel.js` — fungsi server: membuka link dan mengambil nama, gambar, harga
-- `package.json` — pengaturan Node (tanpa library tambahan)
+## Isi
+- index.html      — halaman generator (bisa di Vercel, atau dibuka langsung dari komputer)
+- bookmarklet.js  — kode sumber tombol bookmark "📌 Ambil Data Hotel" (sudah tertanam di index.html)
+- package.json
 
-## Deploy ke Vercel
-Cara A — lewat GitHub:
-1. Upload folder ini ke repository GitHub baru.
-2. Di vercel.com: Add New → Project → pilih repository → Deploy (tanpa ubah pengaturan apa pun).
+## Deploy
+Upload isi folder ini ke GitHub (index.html di root), lalu import di Vercel → Deploy.
+Tidak ada fungsi server lagi; folder api/ boleh dihapus dari repository lama.
 
-Cara B — lewat terminal:
-1. `npm i -g vercel`
-2. Masuk ke folder ini, jalankan `vercel` lalu `vercel --prod`.
-
-## Uji fungsi server
-Buka di browser (ganti dengan domain Vercel Anda):
-`https://NAMA-PROJECT.vercel.app/api/hotel?url=https://trv.lk/7ccc0b61`
-
-Hasil yang benar berisi `name` dan `image`. Kolom `debug` menunjukkan status HTTP dari Traveloka.
-Jika status 403 atau `name` kosong, berarti Traveloka menolak permintaan dari server Vercel —
-nama dan gambar tetap bisa diisi manual di bagian "Ubah hasil".
+## Pakai
+1. Seret tombol 📌 Ambil Data Hotel ke bar bookmark (sekali saja).
+2. Tempel link trv.lk di slot hotel → klik "Buka".
+3. Di halaman hotel Traveloka, klik bookmark → data tersalin.
+4. Tempel di kolom "Data hotel". Ulangi untuk hotel 2 → Salin kode → tempel di CMS lewat tombol <>.
